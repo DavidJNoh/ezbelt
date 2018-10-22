@@ -3,7 +3,9 @@ package com.david.ezbelt.models;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name="users")
@@ -12,18 +14,15 @@ public class User {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
-    @Size(min=2, message="Please enter a valid Email")
+    @Size(min=1, message="Please enter a valid Email")
     @Email(message="Email must be valid")
     private String email;
 
-    @Size(min=5, message="Password must be greater than 5 characters")
+    @Size(min=8, message="Password must be greater than 7 characters")
     private String password;
 
-    @Size(min=2, message="First name has to be at least 2 characters long")
-    private String first_name;
-
-    @Size(min=2, message="Last name has to be at least 2 characters long")
-    private String last_name;
+    @Size(min=1, message="Name has to be at least 1 character long")
+    private String name;
 
     @Transient
     private String passwordConfirmation;
@@ -43,6 +42,9 @@ public class User {
     protected void onUpdate(){
         this.updatedAt = new Date();
     }
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Rating> ratings = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -68,20 +70,12 @@ public class User {
         this.password = password;
     }
 
-    public String getFirst_name() {
-        return first_name;
+    public String getName() {
+        return name;
     }
 
-    public void setFirst_name(String first_name) {
-        this.first_name = first_name;
-    }
-
-    public String getLast_name() {
-        return last_name;
-    }
-
-    public void setLast_name(String last_name) {
-        this.last_name = last_name;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getPasswordConfirmation() {
@@ -106,5 +100,17 @@ public class User {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public List<Rating> getRatings() {
+        return ratings;
+    }
+
+    public void setRatings(List<Rating> ratings) {
+        this.ratings = ratings;
+    }
+
+    public void addRating(Rating rating){
+        this.ratings.add(rating);
     }
 }
